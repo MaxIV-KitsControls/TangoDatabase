@@ -268,9 +268,23 @@ bool DataBase::device_name_to_dfm(string &devname, char domain[], char family[],
 // out :		bool - true or false
 //
 //-----------------------------------------------------------------------------
+bool DataBase::isinvalidchar (char i) {
+  return !((isalnum(i)||(i=='-')||(i=='_')));
+}
+
+bool DataBase::check_string(string &instring)
+{
+	string teststring(instring);
+	if (instring.length()<1)
+		return false;
+	string::size_type index;
+	return find_if(teststring.begin(), teststring.end(), isinvalidchar) == teststring.end();
+}
+
 bool DataBase::check_device_name(string &device_name_str)
 {
 	string devname(device_name_str);
+	string Dstr, Fstr, Mstr;
 	string::size_type index, index2;
 
 	DEBUG_STREAM << "DataBase::check_device_name(): device_name in " << devname << endl;
@@ -317,6 +331,20 @@ bool DataBase::check_device_name(string &device_name_str)
 	{
 		return false;
 	}
+
+	if (index2-index <= 1 )
+		return false;
+
+	Dstr = devname.substr(0,index);
+	Fstr = devname.substr(index+1,index2-index-1);
+	Mstr = devname.substr(index2+1,devname.length()-index2-1);
+	std::cout << "D/F/M: \"" <<  Dstr << "\" / \"" << Fstr << "\" / \"" << Mstr << "\"\n";
+	if (!check_string(Dstr))
+		return false;
+	if (!check_string(Fstr))
+		return false;
+	if (!check_string(Mstr))
+		return false;
 
 	device_name_str = devname;
 
