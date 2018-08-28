@@ -935,6 +935,22 @@ void DataBase::db_add_server(const Tango::DevVarStringArray *argin)
 						                	   o.str(),
 						                	   (const char *)"DataBase::AddServer()");
 			}
+			if (!check_string(tmp_class))
+			{
+  	 	    	TangoSys_OMemStream o;
+	   			o << "class name (" << tmp_class << ") contains illegal characters";
+	   			Tango::Except::throw_exception((const char *)DB_IncorrectDeviceName,
+						                	   o.str(),
+						                	   (const char *)"DataBase::AddServer()");
+			}
+			if (!check_string(tmp_server))
+			{
+  	 	    	TangoSys_OMemStream o;
+	   			o << "server name (" << tmp_server << ") contains illegal characters";
+	   			Tango::Except::throw_exception((const char *)DB_IncorrectDeviceName,
+						                	   o.str(),
+						                	   (const char *)"DataBase::AddServer()");
+			}
 			device_name_to_dfm(tmp_device, domain, family, member);
 
 // first delete the tuple (device,name,count) from the device table

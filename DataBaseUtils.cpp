@@ -256,6 +256,47 @@ bool DataBase::device_name_to_dfm(string &devname, char domain[], char family[],
 
 //+----------------------------------------------------------------------------
 //
+// method : 		DataBase::isinvalidchar(char i)
+//
+// description : 	utility function to check whether a character is invalid
+//
+// in :			char i - character to check
+//
+// out :		bool - true or false
+//
+//-----------------------------------------------------------------------------
+bool DataBase::isvalidchar(char i) {
+  return ((isalnum(i)||(i=='-')||(i=='_')));
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DataBase::check_string(string *instring)
+//
+// description : 	utility function to check whether a string is a valid name
+//
+// in :			string *instring - string to check
+//
+// out :		bool - true or false
+//
+//-----------------------------------------------------------------------------
+bool DataBase::check_string(string &instring)
+{
+	string teststring(instring);
+	if (instring.length()<1)
+		return false;
+	bool isvalid = true;
+	for(std::string::size_type i = 0; i < teststring.size(); ++i) {
+  		if (!isvalidchar(teststring[i])) {
+  			isvalid = false;
+  			break;
+  		}
+	}
+	return isvalid;
+}
+
+//+----------------------------------------------------------------------------
+//
 // method : 		DataBase::check_device_name(string *device_name)
 //
 // description : 	utility function to check whether device name conforms
@@ -268,19 +309,6 @@ bool DataBase::device_name_to_dfm(string &devname, char domain[], char family[],
 // out :		bool - true or false
 //
 //-----------------------------------------------------------------------------
-bool DataBase::isinvalidchar (char i) {
-  return !((isalnum(i)||(i=='-')||(i=='_')));
-}
-
-bool DataBase::check_string(string &instring)
-{
-	string teststring(instring);
-	if (instring.length()<1)
-		return false;
-	string::size_type index;
-	return find_if(teststring.begin(), teststring.end(), isinvalidchar) == teststring.end();
-}
-
 bool DataBase::check_device_name(string &device_name_str)
 {
 	string devname(device_name_str);
