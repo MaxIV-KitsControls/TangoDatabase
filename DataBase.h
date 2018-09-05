@@ -1490,6 +1490,7 @@ protected :
 
 	bool isvalidchar(char i);
 	bool check_string(string &);
+	bool check_server_name(string &);
 	bool check_device_name(string &);
 	bool device_name_to_dfm(string &device_name, char domain[], char family[], char member[]);
 	string replace_wildcard(const char*);

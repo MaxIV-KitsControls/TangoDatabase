@@ -282,17 +282,64 @@ bool DataBase::isvalidchar(char i) {
 //-----------------------------------------------------------------------------
 bool DataBase::check_string(string &instring)
 {
-	string teststring(instring);
 	if (instring.length()<1)
 		return false;
 	bool isvalid = true;
-	for(std::string::size_type i = 0; i < teststring.size(); ++i) {
-  		if (!isvalidchar(teststring[i])) {
+	for(std::string::size_type i = 0; i < instring.size(); ++i) {
+  		if (!isvalidchar(instring[i])) {
   			isvalid = false;
   			break;
   		}
 	}
 	return isvalid;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DataBase::check_server_name(string *server_name)
+//
+// description : 	utility function to check whether server name conforms
+//			to the TANGO naming convention of
+//
+//			ServerName/Instance
+//
+// in :			string *server_name - server name
+//
+// out :		bool - true or false
+//
+//-----------------------------------------------------------------------------
+bool DataBase::check_server_name(string &server_name_str)
+{
+	string SNstr, Istr;
+	string::size_type index;
+
+	DEBUG_STREAM << "DataBase::check_server_name(): server_name in " << server_name_str << endl;
+
+// check there are no special characters which could be interpreted
+// as wildcards or which are otherwise excluded
+
+	if (server_name_str.find('*') != string::npos) return false;
+
+// check name conforms to "SN/I"
+
+	index = server_name_str.find('/');
+
+	if (index == 0 || index == string::npos)
+	{
+		return false;
+	}
+
+	SNstr = server_name_str.substr(0,index);
+	Istr = server_name_str.substr(index+1,server_name_str.length()-index-1);
+	std::cout << "SN/I: \"" <<  SNstr << "\" / \"" << Istr << "\"\n";
+	if (!check_string(SNstr))
+		return false;
+	if (!check_string(Istr))
+		return false;
+
+	DEBUG_STREAM << "DataBase::check_server_name(): server_name out " << server_name_str << endl;
+
+	return true;
 }
 
 //+----------------------------------------------------------------------------
@@ -366,7 +413,7 @@ bool DataBase::check_device_name(string &device_name_str)
 	Dstr = devname.substr(0,index);
 	Fstr = devname.substr(index+1,index2-index-1);
 	Mstr = devname.substr(index2+1,devname.length()-index2-1);
-	std::cout << "D/F/M: \"" <<  Dstr << "\" / \"" << Fstr << "\" / \"" << Mstr << "\"\n";
+	//std::cout << "D/F/M: \"" <<  Dstr << "\" / \"" << Fstr << "\" / \"" << Mstr << "\"\n";
 	if (!check_string(Dstr))
 		return false;
 	if (!check_string(Fstr))

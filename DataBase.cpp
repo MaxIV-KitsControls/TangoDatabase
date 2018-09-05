@@ -810,6 +810,24 @@ void DataBase::db_add_device(const Tango::DevVarStringArray *argin)
 	   				                  o.str(),
 					                  (const char *)"DataBase::AddDevice()");
 	}
+	string tmp_class_str(tmp_class);
+	string tmp_server_str(tmp_server);
+	if (!check_string(tmp_class_str))
+	{
+  	 	TangoSys_OMemStream o;
+	   	o << "class name (" << tmp_class << ") contains illegal characters";
+	   	Tango::Except::throw_exception((const char *)DB_IncorrectDeviceName,
+						               	o.str(),
+						              	(const char *)"DataBase::AddServer()");
+	}
+	if (!check_server_name(tmp_server_str))
+	{
+  	 	TangoSys_OMemStream o;
+	   	o << "server name (" << tmp_server << ") contains illegal characters";
+	   	Tango::Except::throw_exception((const char *)DB_IncorrectDeviceName,
+						                o.str(),
+						                (const char *)"DataBase::AddServer()");
+	}
 	device_name_to_dfm(tmp_device, domain, family, member);
 
 	{
@@ -927,7 +945,9 @@ void DataBase::db_add_server(const Tango::DevVarStringArray *argin)
 		{
 			string tmp_device((*server_device_list)[i*2+1].in());
 			tmp_class = (*server_device_list)[i*2+2];
-			if (!check_device_name(tmp_device))
+			string tmp_class_str(tmp_class);
+			string tmp_server_str(tmp_server);
+			if (!check_device_name(tmp_device))	
 			{
   	 	    	TangoSys_OMemStream o;
 	   			o << "device name (" << tmp_device << ") syntax error (should be [tango:][//instance/]domain/family/member)";
@@ -935,7 +955,7 @@ void DataBase::db_add_server(const Tango::DevVarStringArray *argin)
 						                	   o.str(),
 						                	   (const char *)"DataBase::AddServer()");
 			}
-			if (!check_string(tmp_class))
+			if (!check_string(tmp_class_str))
 			{
   	 	    	TangoSys_OMemStream o;
 	   			o << "class name (" << tmp_class << ") contains illegal characters";
@@ -943,7 +963,7 @@ void DataBase::db_add_server(const Tango::DevVarStringArray *argin)
 						                	   o.str(),
 						                	   (const char *)"DataBase::AddServer()");
 			}
-			if (!check_string(tmp_server))
+			if (!check_server_name(tmp_server_str))
 			{
   	 	    	TangoSys_OMemStream o;
 	   			o << "server name (" << tmp_server << ") contains illegal characters";
